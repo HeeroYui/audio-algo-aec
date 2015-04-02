@@ -5,8 +5,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __AUDIO_ALGO_AEC_LMS_H__
-#define __AUDIO_ALGO_AEC_LMS_H__
+#ifndef __AUDIO_ALGO_AEC_NLMS_H__
+#define __AUDIO_ALGO_AEC_NLMS_H__
 
 #include <etk/types.h>
 #include <etk/chrono.h>
@@ -65,16 +65,16 @@ namespace audio {
 			                                                                                                              
 			                                                                                                              
 			*/
-			class Lms {
+			class Nlms {
 				public:
 					/**
 					 * @brief Constructor
 					 */
-					Lms(void);
+					Nlms(void);
 					/**
 					 * @brief Destructor
 					 */
-					~Lms(void);
+					~Nlms(void);
 				public:
 					/**
 					 * @brief Reset filter history and filter
@@ -114,15 +114,9 @@ namespace audio {
 					 * @param[in] _nbSample Sample size of the filter
 					 */
 					void setFilterSize(size_t _nbSample);
-					/**
-					 * @brief Set Mu value for basic LMS value
-					 * @param[in] _val new mu value
-					 */
-					void setMu(float _val);
 				private:
 					std::vector<float> m_filter; //!< Current filter
 					std::vector<float> m_feedBack; //!< Feedback history
-					float m_mu; //!< mu step size
 				public:
 					// for debug only:
 					std::vector<float> getFilter() {

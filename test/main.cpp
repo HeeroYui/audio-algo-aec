@@ -7,6 +7,7 @@
 #include <test/debug.h>
 #include <etk/etk.h>
 #include <audio/algo/aec/Lms.h>
+#include <audio/algo/aec/Nlms.h>
 #include <etk/os/FSNode.h>
 
 
@@ -56,6 +57,7 @@ int main(int _argc, const char** _argv) {
 	std::string micName = "";
 	int32_t filterSize = 0;
 	float mu = 0.0f;
+	bool nlms = false;
 	for (int32_t iii=0; iii<_argc ; ++iii) {
 		std::string data = _argv[iii];
 		if (etk::start_with(data,"--fb=")) {
@@ -68,14 +70,17 @@ int main(int _argc, const char** _argv) {
 		} else if (etk::start_with(data,"--mu=")) {
 			data = &data[5];
 			mu = etk::string_to_float(data);
+		} else if (data == "--nlms") {
+			nlms = true;
 		} else if (    data == "-h"
 		            || data == "--help") {
 			APPL_INFO("Help : ");
 			APPL_INFO("    ./xxx --fb=file.raw --mic=file.raw");
-			APPL_INFO("        --fb            Feedback file");
-			APPL_INFO("        --mic           Microphone file");
-			APPL_INFO("        --filter-size   Size of the filter");
-			APPL_INFO("        --mu            Mu value -1.0< mu < -1.0");
+			APPL_INFO("        --fb=YYY.raw        Feedback file");
+			APPL_INFO("        --mic=XXX.raw       Microphone file");
+			APPL_INFO("        --filter-size=xxx   Size of the filter");
+			APPL_INFO("        --mu=0.xx           Mu value -1.0< mu < -1.0");
+			APPL_INFO("        --nlms              NLMS version");
 			exit(0);
 		}
 	}
@@ -90,24 +95,57 @@ int main(int _argc, const char** _argv) {
 	APPL_INFO("Read Microphone:");
 	std::vector<int16_t> micData = read(micName);
 	APPL_INFO("    " << micData.size() << " samples");
-	
-	audio::algo::aec::Lms algo;
-	if (filterSize != 0) {
-		algo.setFilterSize(filterSize);
-	}
-	if (mu != 0.0f) {
-		algo.setMu(mu);
-	}
+	// resize output :
 	std::vector<int16_t> output;
 	output.resize(std::min(fbData.size(), micData.size()), 0);
 	// process in chunk of 256 samples
 	int32_t blockSize = 256;
-	for (int32_t iii=0; iii<output.size()/blockSize; ++iii) {
-		APPL_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
-		algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
+	// end filter :
+	std::vector<float> filter;
+	if (nlms == false) {
+		APPL_INFO("***********************");
+		APPL_INFO("**         LMS       **");
+		APPL_INFO("***********************");
+		audio::algo::aec::Lms algo;
+		if (filterSize != 0) {
+			algo.setFilterSize(filterSize);
+		}
+		if (mu != 0.0f) {
+			algo.setMu(mu);
+		}
+		int32_t lastPourcent = -1;
+		for (int32_t iii=0; iii<output.size()/blockSize; ++iii) {
+			if (lastPourcent != 100*iii / (output.size()/blockSize)) {
+				lastPourcent = 100*iii / (output.size()/blockSize);
+				APPL_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
+			} else {
+				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
+			}
+			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
+		}
+		filter = algo.getFilter();
+	} else {
+		APPL_INFO("***********************");
+		APPL_INFO("**    NLMS (power)   **");
+		APPL_INFO("***********************");
+		audio::algo::aec::Nlms algo;
+		if (filterSize != 0) {
+			algo.setFilterSize(filterSize);
+		}
+		int32_t lastPourcent = -1;
+		for (int32_t iii=0; iii<output.size()/blockSize; ++iii) {
+			if (lastPourcent != 100*iii / (output.size()/blockSize)) {
+				lastPourcent = 100*iii / (output.size()/blockSize);
+				APPL_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
+			} else {
+				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
+			}
+			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
+		}
+		filter = algo.getFilter();
 	}
 	write("output.raw", output);
-	write("filter.raw", algo.getFilter());
+	write("filter.raw", filter);
 	
 }
 
