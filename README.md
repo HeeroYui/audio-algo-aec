@@ -20,7 +20,7 @@ download the software :
 
 Compile software and install :
 
-	lutin/lutin.py audio_algo_aec_test
+	lutin/lutin.py -mdebug audio_algo_aec_test
 
 Dependency packages
 ===================
