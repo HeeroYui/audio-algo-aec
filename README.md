@@ -1,7 +1,7 @@
 [![Build Status](https://secure.travis-ci.org/HeeroYui/audio-algo-aec.svg?branch=master)](https://travis-ci.org/HeeroYui/audio-algo-aec)
 
-E-AEC
-=====
+Audio-Algo-AEC
+==============
 
 `audio-algo-aec` (audio algo: Acoustic Echo Cancel) is a FREE software.
 
