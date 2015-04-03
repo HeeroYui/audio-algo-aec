@@ -9,8 +9,9 @@
 #include <audio/algo/aec/Lms.h>
 #include <audio/algo/aec/Nlms.h>
 #include <etk/os/FSNode.h>
+#include <etk/chrono.h>
 
-
+#include <unistd.h>
 #undef __class__
 #define __class__ "test"
 
@@ -58,6 +59,8 @@ int main(int _argc, const char** _argv) {
 	int32_t filterSize = 0;
 	float mu = 0.0f;
 	bool nlms = false;
+	bool perf = false;
+	int64_t sampleRate = 48000;
 	for (int32_t iii=0; iii<_argc ; ++iii) {
 		std::string data = _argv[iii];
 		if (etk::start_with(data,"--fb=")) {
@@ -72,6 +75,11 @@ int main(int _argc, const char** _argv) {
 			mu = etk::string_to_float(data);
 		} else if (data == "--nlms") {
 			nlms = true;
+		} else if (data == "--perf") {
+			perf = true;
+		} else if (etk::start_with(data,"--sample-rate=")) {
+			data = &data[14];
+			sampleRate = etk::string_to_int32_t(data);
 		} else if (    data == "-h"
 		            || data == "--help") {
 			APPL_INFO("Help : ");
@@ -81,6 +89,8 @@ int main(int _argc, const char** _argv) {
 			APPL_INFO("        --filter-size=xxx   Size of the filter");
 			APPL_INFO("        --mu=0.xx           Mu value -1.0< mu < -1.0");
 			APPL_INFO("        --nlms              NLMS version");
+			APPL_INFO("        --perf              Enable performence test (little slower but real performence test)");
+			APPL_INFO("        --sample-rate=XXXX  Signal sample rate (default 48000)");
 			exit(0);
 		}
 	}
@@ -102,6 +112,10 @@ int main(int _argc, const char** _argv) {
 	int32_t blockSize = 256;
 	// end filter :
 	std::vector<float> filter;
+	std11::chrono::nanoseconds totalTimeProcessing(0);
+	std11::chrono::nanoseconds minProcessing(99999999999999LL);
+	std11::chrono::nanoseconds maxProcessing(0);
+	int32_t totalIteration = 0;
 	if (nlms == false) {
 		APPL_INFO("***********************");
 		APPL_INFO("**         LMS       **");
@@ -121,7 +135,17 @@ int main(int _argc, const char** _argv) {
 			} else {
 				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
 			}
+			std11::chrono::steady_clock::time_point timeStart = std11::chrono::steady_clock::now();
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
+			if (perf == true) {
+				std11::chrono::steady_clock::time_point timeEnd = std11::chrono::steady_clock::now();
+				std11::chrono::nanoseconds time = timeEnd - timeStart;
+				minProcessing = std::min(minProcessing, time);
+				maxProcessing = std::max(maxProcessing, time);
+				totalTimeProcessing += time;
+				totalIteration++;
+				usleep(10000);
+			}
 		}
 		filter = algo.getFilter();
 	} else {
@@ -143,6 +167,17 @@ int main(int _argc, const char** _argv) {
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
 		}
 		filter = algo.getFilter();
+	}
+	if (perf == true) {
+		APPL_INFO("Performance Result: ");
+		APPL_INFO("    blockSize=" << blockSize << " sample");
+		APPL_INFO("    min=" << minProcessing.count() << " ns");
+		APPL_INFO("    max=" << maxProcessing.count() << " ns");
+		APPL_INFO("    avg=" << totalTimeProcessing.count()/totalIteration << " ns");
+		
+		APPL_INFO("    min=" << (float((minProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_INFO("    max=" << (float((maxProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_INFO("    avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
 	}
 	write("output.raw", output);
 	write("filter.raw", filter);

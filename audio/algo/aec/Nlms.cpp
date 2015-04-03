@@ -26,17 +26,30 @@ void audio::algo::aec::Nlms::reset(void) {
 	setFilterSize(m_filter.size());
 }
 
+#define MAX_PROCESSING_BLOCK_SIZE (256)
+
 bool audio::algo::aec::Nlms::process(int16_t* _output, const int16_t* _feedback, const int16_t* _microphone, int32_t _nbSample) {
-	float output[_nbSample];
-	float feedback[_nbSample];
-	float microphone[_nbSample];
-	for (size_t iii=0; iii<_nbSample; ++iii) {
-		microphone[iii] = float(_microphone[iii])/32767.0f;
-		feedback[iii] = float(_feedback[iii])/32767.0f;
+	bool ret = false;
+	// due to the fact we allocate the data in the stack:
+	int32_t nbCycle = _nbSample/MAX_PROCESSING_BLOCK_SIZE;
+	if (_nbSample - int32_t(_nbSample/MAX_PROCESSING_BLOCK_SIZE)*MAX_PROCESSING_BLOCK_SIZE != 0 ) {
+		nbCycle++;
 	}
-	bool ret = process(output, feedback, microphone, _nbSample);
-	for (size_t iii=0; iii<_nbSample; ++iii) {
-		_output[iii] = int16_t(float(output[iii])*32767.0f);
+	for (int32_t bbb=0; bbb<nbCycle; ++bbb) {
+		float output[MAX_PROCESSING_BLOCK_SIZE];
+		float feedback[MAX_PROCESSING_BLOCK_SIZE];
+		float microphone[MAX_PROCESSING_BLOCK_SIZE];
+		int32_t offset = bbb*MAX_PROCESSING_BLOCK_SIZE;
+		int32_t nbData = std::min(MAX_PROCESSING_BLOCK_SIZE,
+		                          _nbSample - offset);
+		for (size_t iii=0; iii<nbData; ++iii) {
+			microphone[iii] = float(_microphone[offset+iii])/32767.0f;
+			feedback[iii] = float(_feedback[offset+iii])/32767.0f;
+		}
+		ret = process(output, feedback, microphone, nbData);
+		for (size_t iii=0; iii<nbData; ++iii) {
+			_output[offset+iii] = int16_t(float(output[iii])*32767.0f);
+		}
 	}
 	return ret;
 }
