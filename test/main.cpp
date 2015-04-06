@@ -16,41 +16,6 @@
 #define __class__ "test"
 
 
-static std::vector<int16_t> read(const std::string& _path) {
-	std::vector<int16_t> out;
-	etk::FSNode node(_path);
-	if (node.fileOpenRead() == false) {
-		APPL_ERROR("can not open file : '" << node << "'");
-		return out;
-	}
-	uint64_t nbByte = node.fileSize();
-	out.resize(nbByte/2);
-	node.fileRead(&out[0], 2, nbByte/2);
-	node.fileClose();
-	return out;
-}
-
-static void write(const std::string& _path, const std::vector<int16_t>& _data) {
-	etk::FSNode node(_path);
-	if (node.fileOpenWrite() == false) {
-		APPL_ERROR("can not open file : '" << node << "'");
-		return;
-	}
-	node.fileWrite(&_data[0], 2, _data.size());
-	node.fileClose();
-}
-
-static void write(const std::string& _path, const std::vector<float>& _data) {
-	etk::FSNode node(_path);
-	if (node.fileOpenWrite() == false) {
-		APPL_ERROR("can not open file : '" << node << "'");
-		return;
-	}
-	node.fileWrite(&_data[0], 4, _data.size());
-	node.fileClose();
-}
-
-
 int main(int _argc, const char** _argv) {
 	// the only one init for etk:
 	etk::init(_argc, _argv);
@@ -100,10 +65,10 @@ int main(int _argc, const char** _argv) {
 		exit(-1);
 	}
 	APPL_INFO("Read FeedBack:");
-	std::vector<int16_t> fbData = read(fbName);
+	std::vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
 	APPL_INFO("    " << fbData.size() << " samples");
 	APPL_INFO("Read Microphone:");
-	std::vector<int16_t> micData = read(micName);
+	std::vector<int16_t> micData = etk::FSNodeReadAllDataType<int16_t>(micName);
 	APPL_INFO("    " << micData.size() << " samples");
 	// resize output :
 	std::vector<int16_t> output;
@@ -179,8 +144,8 @@ int main(int _argc, const char** _argv) {
 		APPL_INFO("    max=" << (float((maxProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
 		APPL_INFO("    avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
 	}
-	write("output.raw", output);
-	write("filter.raw", filter);
+	etk::FSNodeWriteAllDataType<int16_t>("output.raw", output);
+	etk::FSNodeWriteAllDataType<float>("filter.raw", filter);
 	
 }
 
