@@ -50,15 +50,15 @@ int main(int _argc, const char** _argv) {
 			sampleRate = etk::string_to_int32_t(data);
 		} else if (    data == "-h"
 		            || data == "--help") {
-			APPL_INFO("Help : ");
-			APPL_INFO("    ./xxx --fb=file.raw --mic=file.raw");
-			APPL_INFO("        --fb=YYY.raw        Feedback file");
-			APPL_INFO("        --mic=XXX.raw       Microphone file");
-			APPL_INFO("        --filter-size=xxx   Size of the filter");
-			APPL_INFO("        --mu=0.xx           Mu value -1.0< mu < -1.0");
-			APPL_INFO("        --nlms              NLMS version");
-			APPL_INFO("        --perf              Enable performence test (little slower but real performence test)");
-			APPL_INFO("        --sample-rate=XXXX  Signal sample rate (default 48000)");
+			APPL_PRINT("Help : ");
+			APPL_PRINT("    ./xxx --fb=file.raw --mic=file.raw");
+			APPL_PRINT("        --fb=YYY.raw        Feedback file");
+			APPL_PRINT("        --mic=XXX.raw       Microphone file");
+			APPL_PRINT("        --filter-size=xxx   Size of the filter");
+			APPL_PRINT("        --mu=0.xx           Mu value -1.0< mu < -1.0");
+			APPL_PRINT("        --nlms              NLMS version");
+			APPL_PRINT("        --perf              Enable performence test (little slower but real performence test)");
+			APPL_PRINT("        --sample-rate=XXXX  Signal sample rate (default 48000)");
 			exit(0);
 		}
 	}
@@ -85,9 +85,9 @@ int main(int _argc, const char** _argv) {
 	std11::chrono::nanoseconds maxProcessing(0);
 	int32_t totalIteration = 0;
 	if (nlms == false) {
-		APPL_INFO("***********************");
-		APPL_INFO("**         LMS       **");
-		APPL_INFO("***********************");
+		APPL_PRINT("***********************");
+		APPL_PRINT("**         LMS       **");
+		APPL_PRINT("***********************");
 		audio::algo::aec::Lms algo;
 		if (filterSize != 0) {
 			algo.setFilterSize(filterSize);
@@ -117,9 +117,9 @@ int main(int _argc, const char** _argv) {
 		}
 		filter = algo.getFilter();
 	} else {
-		APPL_INFO("***********************");
-		APPL_INFO("**    NLMS (power)   **");
-		APPL_INFO("***********************");
+		APPL_PRINT("***********************");
+		APPL_PRINT("**    NLMS (power)   **");
+		APPL_PRINT("***********************");
 		audio::algo::aec::Nlms algo;
 		if (filterSize != 0) {
 			algo.setFilterSize(filterSize);
@@ -136,6 +136,7 @@ int main(int _argc, const char** _argv) {
 		}
 		filter = algo.getFilter();
 	}
+	APPL_PRINT("Process done");
 	if (perf == true) {
 		APPL_PRINT("Performance Result: ");
 		APPL_PRINT("    blockSize=" << blockSize << " sample");
