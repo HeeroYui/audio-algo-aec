@@ -10,6 +10,7 @@
 #include <audio/algo/aec/Nlms.h>
 #include <etk/os/FSNode.h>
 #include <etk/chrono.h>
+#include <etk/thread/tools.h>
 
 #include <unistd.h>
 #undef __class__
@@ -19,6 +20,7 @@
 int main(int _argc, const char** _argv) {
 	// the only one init for etk:
 	etk::init(_argc, _argv);
+	etk::thread::setName("test thread");
 	std::string fbName = "";
 	std::string micName = "";
 	int32_t filterSize = 0;
@@ -41,6 +43,7 @@ int main(int _argc, const char** _argv) {
 		} else if (data == "--nlms") {
 			nlms = true;
 		} else if (data == "--perf") {
+			etk::thread::setPriority(-2);
 			perf = true;
 		} else if (etk::start_with(data,"--sample-rate=")) {
 			data = &data[14];
@@ -134,15 +137,29 @@ int main(int _argc, const char** _argv) {
 		filter = algo.getFilter();
 	}
 	if (perf == true) {
-		APPL_INFO("Performance Result: ");
-		APPL_INFO("    blockSize=" << blockSize << " sample");
-		APPL_INFO("    min=" << minProcessing.count() << " ns");
-		APPL_INFO("    max=" << maxProcessing.count() << " ns");
-		APPL_INFO("    avg=" << totalTimeProcessing.count()/totalIteration << " ns");
+		APPL_PRINT("Performance Result: ");
+		APPL_PRINT("    blockSize=" << blockSize << " sample");
+		APPL_PRINT("    total data time=" << int64_t(totalIteration)*int64_t(blockSize)*1000000000LL/int64_t(sampleRate) << " ns");
+		APPL_PRINT("    min=" << minProcessing.count() << " ns");
+		APPL_PRINT("    max=" << maxProcessing.count() << " ns");
+		APPL_PRINT("    avg=" << totalTimeProcessing.count()/totalIteration << " ns");
 		
-		APPL_INFO("    min=" << (float((minProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_INFO("    max=" << (float((maxProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_INFO("    avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("    " << sampleRate << " Hz");
+		APPL_PRINT("        min=" << (float((minProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("        max=" << (float((maxProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("    48000 Hz");
+		sampleRate = 48000;
+		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("    32000 Hz");
+		sampleRate = 32000;
+		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("    16000 Hz");
+		sampleRate = 16000;
+		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+		APPL_PRINT("    8000 Hz");
+		sampleRate = 8000;
+		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
 	}
 	etk::FSNodeWriteAllDataType<int16_t>("output.raw", output);
 	etk::FSNodeWriteAllDataType<float>("filter.raw", filter);
