@@ -6,8 +6,8 @@
 
 #include <test/debug.h>
 #include <etk/etk.h>
-#include <audio/algo/aec/Lms.h>
-#include <audio/algo/aec/Nlms.h>
+#include <audio/algo/river/Lms.h>
+#include <audio/algo/river/Nlms.h>
 #include <etk/os/FSNode.h>
 #include <etk/chrono.h>
 #include <etk/thread/tools.h>
@@ -15,6 +15,51 @@
 #include <unistd.h>
 #undef __class__
 #define __class__ "test"
+
+
+class Performance {
+	private:
+		std11::chrono::steady_clock::time_point m_timeStart;
+		std11::chrono::steady_clock::time_point m_timeStop;
+		std11::chrono::nanoseconds m_totalTimeProcessing;
+		std11::chrono::nanoseconds m_minProcessing;
+		std11::chrono::nanoseconds m_maxProcessing;
+		int32_t m_totalIteration;
+	public:
+		Performance() :
+		  m_totalTimeProcessing(0),
+		  m_minProcessing(99999999999999LL),
+		  m_maxProcessing(0),
+		  m_totalIteration(0) {
+			
+		}
+		void tic() {
+			m_timeStart = std11::chrono::steady_clock::now();
+		}
+		void toc() {
+			m_timeStop = std11::chrono::steady_clock::now();
+			std11::chrono::nanoseconds time = m_timeStop - m_timeStart;
+			m_minProcessing = std::min(m_minProcessing, time);
+			m_maxProcessing = std::max(m_maxProcessing, time);
+			m_totalTimeProcessing += time;
+			m_totalIteration++;
+			
+		}
+		
+		std11::chrono::nanoseconds getTotalTimeProcessing() {
+			return m_totalTimeProcessing;
+		}
+		std11::chrono::nanoseconds getMinProcessing() {
+			return m_minProcessing;
+		}
+		std11::chrono::nanoseconds getMaxProcessing() {
+			return m_maxProcessing;
+		}
+		int32_t getTotalIteration() {
+			return m_totalIteration;
+		}
+};
+
 
 
 int main(int _argc, const char** _argv) {
@@ -67,6 +112,9 @@ int main(int _argc, const char** _argv) {
 		APPL_ERROR("Can not Process missing parameters...");
 		exit(-1);
 	}
+	
+	Performance perfo;
+	
 	APPL_INFO("Read FeedBack:");
 	std::vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
 	APPL_INFO("    " << fbData.size() << " samples");
@@ -78,17 +126,12 @@ int main(int _argc, const char** _argv) {
 	output.resize(std::min(fbData.size(), micData.size()), 0);
 	// process in chunk of 256 samples
 	int32_t blockSize = 256;
-	// end filter :
-	std::vector<float> filter;
-	std11::chrono::nanoseconds totalTimeProcessing(0);
-	std11::chrono::nanoseconds minProcessing(99999999999999LL);
-	std11::chrono::nanoseconds maxProcessing(0);
-	int32_t totalIteration = 0;
 	if (nlms == false) {
 		APPL_PRINT("***********************");
 		APPL_PRINT("**         LMS       **");
 		APPL_PRINT("***********************");
-		audio::algo::aec::Lms algo;
+		audio::algo::river::Lms algo;
+		algo.init(1, sampleRate, audio::format_float);
 		if (filterSize != 0) {
 			algo.setFilterSize(filterSize);
 		}
@@ -103,24 +146,19 @@ int main(int _argc, const char** _argv) {
 			} else {
 				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
 			}
-			std11::chrono::steady_clock::time_point timeStart = std11::chrono::steady_clock::now();
+			perfo.tic();
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
 			if (perf == true) {
-				std11::chrono::steady_clock::time_point timeEnd = std11::chrono::steady_clock::now();
-				std11::chrono::nanoseconds time = timeEnd - timeStart;
-				minProcessing = std::min(minProcessing, time);
-				maxProcessing = std::max(maxProcessing, time);
-				totalTimeProcessing += time;
-				totalIteration++;
-				usleep(10000);
+				perfo.toc();
+				usleep(1000);
 			}
 		}
-		filter = algo.getFilter();
 	} else {
 		APPL_PRINT("***********************");
 		APPL_PRINT("**    NLMS (power)   **");
 		APPL_PRINT("***********************");
-		audio::algo::aec::Nlms algo;
+		audio::algo::river::Nlms algo;
+		algo.init(1, sampleRate, audio::format_float);
 		if (filterSize != 0) {
 			algo.setFilterSize(filterSize);
 		}
@@ -132,38 +170,27 @@ int main(int _argc, const char** _argv) {
 			} else {
 				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
 			}
+			perfo.tic();
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
+			if (perf == true) {
+				perfo.toc();
+				usleep(1000);
+			}
 		}
-		filter = algo.getFilter();
 	}
 	APPL_PRINT("Process done");
 	if (perf == true) {
 		APPL_PRINT("Performance Result: ");
-		APPL_PRINT("    blockSize=" << blockSize << " sample");
-		APPL_PRINT("    total data time=" << int64_t(totalIteration)*int64_t(blockSize)*1000000000LL/int64_t(sampleRate) << " ns");
-		APPL_PRINT("    min=" << minProcessing.count() << " ns");
-		APPL_PRINT("    max=" << maxProcessing.count() << " ns");
-		APPL_PRINT("    avg=" << totalTimeProcessing.count()/totalIteration << " ns");
-		
-		APPL_PRINT("    " << sampleRate << " Hz");
-		APPL_PRINT("        min=" << (float((minProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("        max=" << (float((maxProcessing.count()*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("    48000 Hz");
-		sampleRate = 48000;
-		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("    32000 Hz");
-		sampleRate = 32000;
-		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("    16000 Hz");
-		sampleRate = 16000;
-		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
-		APPL_PRINT("    8000 Hz");
-		sampleRate = 8000;
-		APPL_PRINT("        avg=" << (float(((totalTimeProcessing.count()/totalIteration)*sampleRate)/blockSize)/1000000000.0)*100.0 << " %");
+	APPL_INFO("    blockSize=" << blockSize << " sample");
+	APPL_INFO("    min < avg < max =" << perfo.getMinProcessing().count() << "ns < "
+	                                  << perfo.getTotalTimeProcessing().count()/perfo.getTotalIteration() << "ns < "
+	                                  << perfo.getMaxProcessing().count() << "ns ");
+	float avg = (float(((perfo.getTotalTimeProcessing().count()/perfo.getTotalIteration())*sampleRate)/double(blockSize))/1000000000.0)*100.0;
+	APPL_INFO("    min < avg < max= " << (float((perfo.getMinProcessing().count()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "% < "
+	                                  << avg << "% < "
+	                                  << (float((perfo.getMaxProcessing().count()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "%");
+	APPL_PRINT("float : " << sampleRate << " : " << avg << "%");
 	}
 	etk::FSNodeWriteAllDataType<int16_t>("output.raw", output);
-	etk::FSNodeWriteAllDataType<float>("filter.raw", filter);
-	
 }
 

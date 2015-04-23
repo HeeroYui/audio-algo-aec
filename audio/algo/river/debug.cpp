@@ -7,8 +7,8 @@
 #include "debug.h"
 
 
-int32_t audio::algo::aec::getLogId() {
-	static int32_t g_val = etk::log::registerInstance("audio-algo-aec");
+int32_t audio::algo::river::getLogId() {
+	static int32_t g_val = etk::log::registerInstance("audio-algo-river");
 	return g_val;
 }
 

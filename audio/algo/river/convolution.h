@@ -5,15 +5,15 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __AUDIO_ALGO_AEC_POWER_H__
-#define __AUDIO_ALGO_AEC_POWER_H__
+#ifndef __AUDIO_ALGO_RIVER_CONVOLUTION_H__
+#define __AUDIO_ALGO_RIVER_CONVOLUTION_H__
 
 #include <etk/types.h>
 
 namespace audio {
 	namespace algo {
-		namespace aec {
-			float power(float* _data, int32_t _count);
+		namespace river {
+			float convolution(float* _dataMinus, float* _dataPlus, size_t _count);
 		}
 	}
 }

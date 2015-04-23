@@ -8,12 +8,12 @@ def get_desc():
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio_algo_aec_test', 'BINARY')
+	myModule = module.Module(__file__, 'audio_algo_river_test', 'BINARY')
 	myModule.add_src_file([
 		'test/main.cpp',
 		'test/debug.cpp'
 		])
-	myModule.add_module_depend(['audio_algo_aec'])
+	myModule.add_module_depend(['audio_algo_river'])
 	return myModule
 
 

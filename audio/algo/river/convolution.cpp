@@ -5,14 +5,12 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/aec/power.h>
+#include <audio/algo/river/convolution.h>
 
-
-float audio::algo::aec::power(float* _data, int32_t _count) {
-	float out = 0;
+float audio::algo::river::convolution(float* _dataMinus, float* _dataPlus, size_t _count) {
+	float out = 0.0f;
 	for (size_t iii = 0; iii < _count; ++iii) {
-		out += *_data * *_data;
-		_data--;
+		out += *_dataMinus-- * *_dataPlus++;
 	}
 	return out;
 }
