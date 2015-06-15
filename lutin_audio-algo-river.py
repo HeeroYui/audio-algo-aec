@@ -4,11 +4,11 @@ import lutin.tools as tools
 import lutin.debug as debug
 
 def get_desc():
-	return "audio_algo_river : AEC basic algo"
+	return "river algos"
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio_algo_river', 'LIBRARY')
+	myModule = module.Module(__file__, 'audio-algo-river', 'LIBRARY')
 	myModule.add_src_file([
 		'audio/algo/river/debug.cpp',
 		'audio/algo/river/convolution.cpp',

@@ -4,16 +4,16 @@ import lutin.tools as tools
 import lutin.debug as debug
 
 def get_desc():
-	return "audio_algo_aec_test: test for LMS ALGO"
+	return "test for LMS ALGO"
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio_algo_river_test', 'BINARY')
+	myModule = module.Module(__file__, 'audio_algo-river-test', 'BINARY')
 	myModule.add_src_file([
 		'test/main.cpp',
 		'test/debug.cpp'
 		])
-	myModule.add_module_depend(['audio_algo_river'])
+	myModule.add_module_depend(['audio-algo-river'])
 	return myModule
 
 
