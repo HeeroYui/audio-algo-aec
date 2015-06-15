@@ -1,11 +1,10 @@
-[![Build Status](https://secure.travis-ci.org/HeeroYui/audio-algo-aec.svg?branch=master)](https://travis-ci.org/HeeroYui/audio-algo-aec)
 
-Audio-Algo-AEC
-==============
+Audio-algo-river
+================
 
-`audio-algo-aec` (audio algo: Acoustic Echo Cancel) is a FREE software.
+`audio-algo-river` is a FREE software.
 
-This is a part of bacis algorithms
+[![Build Status](https://travis-ci.org/musicdsp/audio-algo-river.svg?branch=master)](https://travis-ci.org/musicdsp/audio-algo-river)
 
 Instructions
 ============
@@ -43,4 +42,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
