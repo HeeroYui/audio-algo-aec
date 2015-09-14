@@ -18,8 +18,16 @@ def create(target):
 		'audio/algo/river/Nlms.cpp',
 		'audio/algo/river/Suppressor.cpp'
 		])
+	myModule.add_header_file([
+		'audio/algo/river/convolution.h',
+		'audio/algo/river/power.h',
+		'audio/algo/river/updateFilter.h',
+		'audio/algo/river/Lms.h',
+		'audio/algo/river/Nlms.h',
+		'audio/algo/river/Suppressor.h'
+		])
 	myModule.add_module_depend(['etk', 'audio'])
-	myModule.add_export_path(tools.get_current_path(__file__))
+	myModule.add_path(tools.get_current_path(__file__))
 	# return module
 	return myModule
 

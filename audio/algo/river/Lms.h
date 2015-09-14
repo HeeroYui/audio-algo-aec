@@ -9,9 +9,9 @@
 #define __AUDIO_ALGO_RIVER_LMS_H__
 
 #include <etk/types.h>
-#include <etk/chrono.h>
+#include <chrono>
 #include <audio/format.h>
-#include <etk/memory.h>
+#include <memory>
 
 namespace audio {
 	namespace algo {

@@ -9,7 +9,7 @@
 #include <audio/algo/river/Lms.h>
 #include <audio/algo/river/Nlms.h>
 #include <etk/os/FSNode.h>
-#include <etk/chrono.h>
+#include <chrono>
 #include <etk/thread/tools.h>
 
 #include <unistd.h>
