@@ -8,8 +8,8 @@ def get_desc():
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio-algo-river', 'LIBRARY')
-	myModule.add_src_file([
+	my_module = module.Module(__file__, 'audio-algo-river', 'LIBRARY')
+	my_module.add_src_file([
 		'audio/algo/river/debug.cpp',
 		'audio/algo/river/convolution.cpp',
 		'audio/algo/river/power.cpp',
@@ -18,7 +18,7 @@ def create(target):
 		'audio/algo/river/Nlms.cpp',
 		'audio/algo/river/Suppressor.cpp'
 		])
-	myModule.add_header_file([
+	my_module.add_header_file([
 		'audio/algo/river/convolution.h',
 		'audio/algo/river/power.h',
 		'audio/algo/river/updateFilter.h',
@@ -26,10 +26,10 @@ def create(target):
 		'audio/algo/river/Nlms.h',
 		'audio/algo/river/Suppressor.h'
 		])
-	myModule.add_module_depend(['etk', 'audio'])
-	myModule.add_path(tools.get_current_path(__file__))
+	my_module.add_module_depend(['etk', 'audio'])
+	my_module.add_path(tools.get_current_path(__file__))
 	# return module
-	return myModule
+	return my_module
 
 
 
