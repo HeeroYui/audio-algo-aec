@@ -4,7 +4,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <test/debug.h>
+#include <test-debug/debug.h>
 #include <etk/etk.h>
 #include <audio/algo/river/Lms.h>
 #include <audio/algo/river/Nlms.h>
@@ -95,41 +95,41 @@ int main(int _argc, const char** _argv) {
 			sampleRate = etk::string_to_int32_t(data);
 		} else if (    data == "-h"
 		            || data == "--help") {
-			APPL_PRINT("Help : ");
-			APPL_PRINT("    ./xxx --fb=file.raw --mic=file.raw");
-			APPL_PRINT("        --fb=YYY.raw        Feedback file");
-			APPL_PRINT("        --mic=XXX.raw       Microphone file");
-			APPL_PRINT("        --filter-size=xxx   Size of the filter");
-			APPL_PRINT("        --mu=0.xx           Mu value -1.0< mu < -1.0");
-			APPL_PRINT("        --nlms              NLMS version");
-			APPL_PRINT("        --perf              Enable performence test (little slower but real performence test)");
-			APPL_PRINT("        --sample-rate=XXXX  Signal sample rate (default 48000)");
+			TEST_PRINT("Help : ");
+			TEST_PRINT("    ./xxx --fb=file.raw --mic=file.raw");
+			TEST_PRINT("        --fb=YYY.raw        Feedback file");
+			TEST_PRINT("        --mic=XXX.raw       Microphone file");
+			TEST_PRINT("        --filter-size=xxx   Size of the filter");
+			TEST_PRINT("        --mu=0.xx           Mu value -1.0< mu < -1.0");
+			TEST_PRINT("        --nlms              NLMS version");
+			TEST_PRINT("        --perf              Enable performence test (little slower but real performence test)");
+			TEST_PRINT("        --sample-rate=XXXX  Signal sample rate (default 48000)");
 			exit(0);
 		}
 	}
 	if (    fbName == ""
 	     || micName == "") {
-		APPL_ERROR("Can not Process missing parameters...");
+		TEST_ERROR("Can not Process missing parameters...");
 		exit(-1);
 	}
 	
 	Performance perfo;
 	
-	APPL_INFO("Read FeedBack:");
+	TEST_INFO("Read FeedBack:");
 	std::vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
-	APPL_INFO("    " << fbData.size() << " samples");
-	APPL_INFO("Read Microphone:");
+	TEST_INFO("    " << fbData.size() << " samples");
+	TEST_INFO("Read Microphone:");
 	std::vector<int16_t> micData = etk::FSNodeReadAllDataType<int16_t>(micName);
-	APPL_INFO("    " << micData.size() << " samples");
+	TEST_INFO("    " << micData.size() << " samples");
 	// resize output :
 	std::vector<int16_t> output;
 	output.resize(std::min(fbData.size(), micData.size()), 0);
 	// process in chunk of 256 samples
 	int32_t blockSize = 256;
 	if (nlms == false) {
-		APPL_PRINT("***********************");
-		APPL_PRINT("**         LMS       **");
-		APPL_PRINT("***********************");
+		TEST_PRINT("***********************");
+		TEST_PRINT("**         LMS       **");
+		TEST_PRINT("***********************");
 		audio::algo::river::Lms algo;
 		algo.init(1, sampleRate, audio::format_float);
 		if (filterSize != 0) {
@@ -142,9 +142,9 @@ int main(int _argc, const char** _argv) {
 		for (int32_t iii=0; iii<output.size()/blockSize; ++iii) {
 			if (lastPourcent != 100*iii / (output.size()/blockSize)) {
 				lastPourcent = 100*iii / (output.size()/blockSize);
-				APPL_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
+				TEST_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
 			} else {
-				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
+				TEST_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
 			}
 			perfo.tic();
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
@@ -154,9 +154,9 @@ int main(int _argc, const char** _argv) {
 			}
 		}
 	} else {
-		APPL_PRINT("***********************");
-		APPL_PRINT("**    NLMS (power)   **");
-		APPL_PRINT("***********************");
+		TEST_PRINT("***********************");
+		TEST_PRINT("**    NLMS (power)   **");
+		TEST_PRINT("***********************");
 		audio::algo::river::Nlms algo;
 		algo.init(1, sampleRate, audio::format_float);
 		if (filterSize != 0) {
@@ -166,9 +166,9 @@ int main(int _argc, const char** _argv) {
 		for (int32_t iii=0; iii<output.size()/blockSize; ++iii) {
 			if (lastPourcent != 100*iii / (output.size()/blockSize)) {
 				lastPourcent = 100*iii / (output.size()/blockSize);
-				APPL_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
+				TEST_INFO("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize << " " << lastPourcent << "/100");
 			} else {
-				APPL_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
+				TEST_VERBOSE("Process : " << iii*blockSize << "/" << int32_t(output.size()/blockSize)*blockSize);
 			}
 			perfo.tic();
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
@@ -178,18 +178,18 @@ int main(int _argc, const char** _argv) {
 			}
 		}
 	}
-	APPL_PRINT("Process done");
+	TEST_PRINT("Process done");
 	if (perf == true) {
-		APPL_PRINT("Performance Result: ");
-	APPL_INFO("    blockSize=" << blockSize << " sample");
-	APPL_INFO("    min < avg < max =" << perfo.getMinProcessing().count() << "ns < "
+		TEST_PRINT("Performance Result: ");
+	TEST_INFO("    blockSize=" << blockSize << " sample");
+	TEST_INFO("    min < avg < max =" << perfo.getMinProcessing().count() << "ns < "
 	                                  << perfo.getTotalTimeProcessing().count()/perfo.getTotalIteration() << "ns < "
 	                                  << perfo.getMaxProcessing().count() << "ns ");
 	float avg = (float(((perfo.getTotalTimeProcessing().count()/perfo.getTotalIteration())*sampleRate)/double(blockSize))/1000000000.0)*100.0;
-	APPL_INFO("    min < avg < max= " << (float((perfo.getMinProcessing().count()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "% < "
+	TEST_INFO("    min < avg < max= " << (float((perfo.getMinProcessing().count()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "% < "
 	                                  << avg << "% < "
 	                                  << (float((perfo.getMaxProcessing().count()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "%");
-	APPL_PRINT("float : " << sampleRate << " : " << avg << "%");
+	TEST_PRINT("float : " << sampleRate << " : " << avg << "%");
 	}
 	etk::FSNodeWriteAllDataType<int16_t>("output.raw", output);
 }
