@@ -153,7 +153,7 @@ namespace audio {
 						return out;
 					}
 					
-					void setFilterTime(std11::chrono::microseconds _time) {
+					void setFilterTime(std::chrono::microseconds _time) {
 						setFilterSize((m_sampleRate*_time.count())/1000000LL);
 					}
 					
@@ -218,7 +218,7 @@ void audio::algo::river::Nlms::process(void* _output, const void* _input, const 
 }
 
 
-void audio::algo::river::Nlms::setFilterTime(std11::chrono::microseconds _time) {
+void audio::algo::river::Nlms::setFilterTime(std::chrono::microseconds _time) {
 	if (m_private == nullptr) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}

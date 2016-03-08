@@ -109,13 +109,13 @@ namespace audio {
 					 */
 					virtual void process(void* _output, const void* _input, const void* _inputFeedback, size_t _nbChunk);
 				protected:
-					std11::shared_ptr<LmsPrivate> m_private; // private data.
+					std::shared_ptr<LmsPrivate> m_private; // private data.
 				public: // parameter area:
 					/**
 					 * @brief Set filter size with specifing the filter temporal size and his samplerate
 					 * @param[in] _time Time of the filter size
 					 */
-					virtual void setFilterTime(std11::chrono::microseconds _time);
+					virtual void setFilterTime(std::chrono::microseconds _time);
 					/**
 					 * @brief Set filter size in number of sample
 					 * @param[in] _nbSample Sample size of the filter

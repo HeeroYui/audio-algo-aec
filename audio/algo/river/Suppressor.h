@@ -60,18 +60,18 @@ namespace audio {
 					 */
 					virtual void process(void* _output, const void* _input, const void* _inputFeedback, size_t _nbChunk);
 				protected:
-					std11::shared_ptr<SupressorPrivate> m_private; // private data.
+					std::shared_ptr<SupressorPrivate> m_private; // private data.
 				public: // parameter area:
 					/**
 					 * @brief Set the algo attaque time.
 					 * @param[in] _time Time of the attaque gain.
 					 */
-					virtual void setAttaqueTime(std11::chrono::microseconds _time);
+					virtual void setAttaqueTime(std::chrono::microseconds _time);
 					/**
 					 * @brief Set the algo release time.
 					 * @param[in] _time Time of the release gain.
 					 */
-					virtual void setReleaseTime(std11::chrono::microseconds _time);
+					virtual void setReleaseTime(std::chrono::microseconds _time);
 					/**
 					 * @brief Set the minimum Gain.
 					 * @param[in] _gain dB gain to apply for minimum.
@@ -86,7 +86,7 @@ namespace audio {
 					 * @brief Set the delay befor releasing time.
 					 * @param[in] _time Time of the dalay release.
 					 */
-					virtual void setReleaseDelay(std11::chrono::microseconds _time);
+					virtual void setReleaseDelay(std::chrono::microseconds _time);
 			};
 		}
 	}

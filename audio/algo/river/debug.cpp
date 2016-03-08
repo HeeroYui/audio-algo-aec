@@ -8,7 +8,7 @@
 
 
 int32_t audio::algo::river::getLogId() {
-	static int32_t g_val = etk::log::registerInstance("audio-algo-river");
+	static int32_t g_val = elog::registerInstance("audio-algo-river");
 	return g_val;
 }
 

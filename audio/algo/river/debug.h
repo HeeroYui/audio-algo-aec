@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include <etk/log.h>
+#include <elog/log.h>
 
 namespace audio {
 	namespace algo {
@@ -15,7 +15,7 @@ namespace audio {
 	}
 }
 
-#define AA_RIVER_BASE(info,data) TK_LOG_BASE(audio::algo::river::getLogId(),info,data)
+#define AA_RIVER_BASE(info,data) ELOG_BASE(audio::algo::river::getLogId(),info,data)
 
 #define AA_RIVER_CRITICAL(data)      AA_RIVER_BASE(1, data)
 #define AA_RIVER_ERROR(data)         AA_RIVER_BASE(2, data)
