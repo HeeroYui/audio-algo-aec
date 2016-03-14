@@ -10,7 +10,7 @@
 #include <audio/algo/river/Nlms.h>
 #include <etk/os/FSNode.h>
 #include <chrono>
-#include <etk/thread/tools.h>
+#include <ethread/tools.h>
 
 #include <unistd.h>
 #undef __class__
@@ -65,7 +65,7 @@ class Performance {
 int main(int _argc, const char** _argv) {
 	// the only one init for etk:
 	etk::init(_argc, _argv);
-	etk::thread::setName("test thread");
+	ethread::setName("test thread");
 	std::string fbName = "";
 	std::string micName = "";
 	int32_t filterSize = 0;
@@ -88,7 +88,7 @@ int main(int _argc, const char** _argv) {
 		} else if (data == "--nlms") {
 			nlms = true;
 		} else if (data == "--perf") {
-			etk::thread::setPriority(-2);
+			ethread::setPriority(-2);
 			perf = true;
 		} else if (etk::start_with(data,"--sample-rate=")) {
 			data = &data[14];
