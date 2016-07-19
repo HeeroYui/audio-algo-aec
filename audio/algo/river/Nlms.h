@@ -9,7 +9,7 @@
 #include <etk/types.h>
 #include <chrono>
 #include <audio/format.h>
-#include <memory>
+#include <ememory/memory.h>
 
 namespace audio {
 	namespace algo {
@@ -109,7 +109,7 @@ namespace audio {
 					 */
 					virtual void process(void* _output, const void* _input, const void* _inputFeedback, size_t _nbChunk);
 				protected:
-					std::shared_ptr<NlmsPrivate> m_private; // private data.
+					ememory::SharedPtr<NlmsPrivate> m_private; // private data.
 				public: // parameter area:
 					/**
 					 * @brief Set filter size with specifing the filter temporal size and his samplerate

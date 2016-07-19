@@ -168,7 +168,7 @@ void audio::algo::river::Lms::reset(void) {
 
 void audio::algo::river::Lms::init(int8_t _nbChannel, float _sampleRate, enum audio::format _format) {
 	if (m_private == nullptr) {
-		m_private = std::make_shared<audio::algo::river::LmsPrivate>();
+		m_private = ememory::makeShared<audio::algo::river::LmsPrivate>();
 	}
 	m_private->init(_nbChannel, _sampleRate, _format);
 }

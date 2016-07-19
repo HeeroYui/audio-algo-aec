@@ -141,7 +141,7 @@ void audio::algo::river::Supressor::reset(void) {
 
 void audio::algo::river::Supressor::init(int8_t _nbChannel, float _sampleRate, enum audio::format _format) {
 	if (m_private == nullptr) {
-		m_private = std::make_shared<audio::algo::river::SupressorPrivate>();
+		m_private = ememory::makeShared<audio::algo::river::SupressorPrivate>();
 	}
 	m_private->init(_nbChannel, _sampleRate, _format);
 }
