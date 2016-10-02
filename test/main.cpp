@@ -4,17 +4,15 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <test-debug/debug.h>
-#include <etk/etk.h>
-#include <audio/algo/river/Lms.h>
-#include <audio/algo/river/Nlms.h>
-#include <etk/os/FSNode.h>
+#include <test-debug/debug.hpp>
+#include <etk/etk.hpp>
+#include <audio/algo/river/Lms.hpp>
+#include <audio/algo/river/Nlms.hpp>
+#include <etk/os/FSNode.hpp>
 #include <chrono>
-#include <ethread/tools.h>
+#include <ethread/tools.hpp>
 
 #include <unistd.h>
-#undef __class__
-#define __class__ "test"
 
 
 class Performance {

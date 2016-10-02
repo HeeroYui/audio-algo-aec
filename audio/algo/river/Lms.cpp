@@ -5,10 +5,10 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/debug.h>
-#include <audio/algo/river/Lms.h>
-#include <audio/algo/river/updateFilter.h>
-#include <audio/algo/river/convolution.h>
+#include <audio/algo/river/debug.hpp>
+#include <audio/algo/river/Lms.hpp>
+#include <audio/algo/river/updateFilter.hpp>
+#include <audio/algo/river/convolution.hpp>
 
 #define MAX_PROCESSING_BLOCK_SIZE (256)
 

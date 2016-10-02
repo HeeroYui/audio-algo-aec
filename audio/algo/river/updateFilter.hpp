@@ -6,13 +6,12 @@
  */
 #pragma once
 
-#include <etk/types.h>
+#include <etk/types.hpp>
 
 namespace audio {
 	namespace algo {
 		namespace river {
-			float power(float* _data, int32_t _count);
+			void updateFilter(float* _filter, float* _data, float _value, int32_t _count);
 		}
 	}
 }
-

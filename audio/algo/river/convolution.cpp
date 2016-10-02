@@ -5,7 +5,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/convolution.h>
+#include <audio/algo/river/convolution.hpp>
 
 float audio::algo::river::convolution(float* _dataMinus, float* _dataPlus, size_t _count) {
 	float out = 0.0f;

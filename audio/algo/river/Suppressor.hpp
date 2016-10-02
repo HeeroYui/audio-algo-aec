@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include <etk/types.h>
+#include <etk/types.hpp>
 #include <chrono>
-#include <audio/format.h>
-#include <ememory/memory.h>
+#include <audio/format.hpp>
+#include <ememory/memory.hpp>
 
 namespace audio {
 	namespace algo {

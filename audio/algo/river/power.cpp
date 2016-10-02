@@ -5,7 +5,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/power.h>
+#include <audio/algo/river/power.hpp>
 
 
 float audio::algo::river::power(float* _data, int32_t _count) {

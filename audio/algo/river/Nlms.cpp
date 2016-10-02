@@ -5,25 +5,11 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/debug.h>
-#include <audio/algo/river/Nlms.h>
-#include <audio/algo/river/updateFilter.h>
-#include <audio/algo/river/convolution.h>
-#include <audio/algo/river/power.h>
-
-
-/** @file
- * @author Edouard DUPIN
- * @author Fatima MARFOUQ
- * @copyright 2011, Edouard DUPIN, all right reserved
- * @license APACHE v2.0 (see license file)
- */
-
-#include <audio/algo/river/debug.h>
-#include <audio/algo/river/Nlms.h>
-#include <audio/algo/river/updateFilter.h>
-#include <audio/algo/river/convolution.h>
-
+#include <audio/algo/river/debug.hpp>
+#include <audio/algo/river/Nlms.hpp>
+#include <audio/algo/river/updateFilter.hpp>
+#include <audio/algo/river/convolution.hpp>
+#include <audio/algo/river/power.hpp>
 #define MAX_PROCESSING_BLOCK_SIZE (256)
 
 namespace audio {

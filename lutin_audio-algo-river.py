@@ -37,12 +37,12 @@ def create(target, module_name):
 		'audio/algo/river/Suppressor.cpp'
 		])
 	my_module.add_header_file([
-		'audio/algo/river/convolution.h',
-		'audio/algo/river/power.h',
-		'audio/algo/river/updateFilter.h',
-		'audio/algo/river/Lms.h',
-		'audio/algo/river/Nlms.h',
-		'audio/algo/river/Suppressor.h'
+		'audio/algo/river/convolution.hpp',
+		'audio/algo/river/power.hpp',
+		'audio/algo/river/updateFilter.hpp',
+		'audio/algo/river/Lms.hpp',
+		'audio/algo/river/Nlms.hpp',
+		'audio/algo/river/Suppressor.hpp'
 		])
 	my_module.add_depend(['etk', 'audio'])
 	my_module.add_path(tools.get_current_path(__file__))

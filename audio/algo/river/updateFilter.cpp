@@ -5,7 +5,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/updateFilter.h>
+#include <audio/algo/river/updateFilter.hpp>
 
 
 void audio::algo::river::updateFilter(float* _filter, float* _data, float _value, int32_t _count) {

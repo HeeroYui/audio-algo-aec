@@ -5,8 +5,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/algo/river/debug.h>
-#include <audio/algo/river/Suppressor.h>
+#include <audio/algo/river/debug.hpp>
+#include <audio/algo/river/Suppressor.hpp>
 
 namespace audio {
 	namespace algo {
