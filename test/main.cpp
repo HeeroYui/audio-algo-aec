@@ -37,8 +37,8 @@ class Performance {
 		void toc() {
 			m_timeStop = std::chrono::steady_clock::now();
 			std::chrono::nanoseconds time = m_timeStop - m_timeStart;
-			m_minProcessing = std::min(m_minProcessing, time);
-			m_maxProcessing = std::max(m_maxProcessing, time);
+			m_minProcessing = etk::min(m_minProcessing, time);
+			m_maxProcessing = etk::max(m_maxProcessing, time);
 			m_totalTimeProcessing += time;
 			m_totalIteration++;
 			
@@ -64,15 +64,15 @@ int main(int _argc, const char** _argv) {
 	// the only one init for etk:
 	etk::init(_argc, _argv);
 	ethread::setName("test thread");
-	std::string fbName = "";
-	std::string micName = "";
+	etk::String fbName = "";
+	etk::String micName = "";
 	int32_t filterSize = 0;
 	float mu = 0.0f;
 	bool nlms = false;
 	bool perf = false;
 	int64_t sampleRate = 48000;
 	for (int32_t iii=0; iii<_argc ; ++iii) {
-		std::string data = _argv[iii];
+		etk::String data = _argv[iii];
 		if (etk::start_with(data,"--fb=")) {
 			fbName = &data[5];
 		} else if (etk::start_with(data,"--mic=")) {
@@ -114,14 +114,14 @@ int main(int _argc, const char** _argv) {
 	Performance perfo;
 	
 	TEST_INFO("Read FeedBack:");
-	std::vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
+	etk::Vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
 	TEST_INFO("    " << fbData.size() << " samples");
 	TEST_INFO("Read Microphone:");
-	std::vector<int16_t> micData = etk::FSNodeReadAllDataType<int16_t>(micName);
+	etk::Vector<int16_t> micData = etk::FSNodeReadAllDataType<int16_t>(micName);
 	TEST_INFO("    " << micData.size() << " samples");
 	// resize output :
-	std::vector<int16_t> output;
-	output.resize(std::min(fbData.size(), micData.size()), 0);
+	etk::Vector<int16_t> output;
+	output.resize(etk::min(fbData.size(), micData.size()), 0);
 	// process in chunk of 256 samples
 	int32_t blockSize = 256;
 	if (nlms == false) {

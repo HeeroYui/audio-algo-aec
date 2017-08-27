@@ -20,8 +20,8 @@ namespace audio {
 					int8_t m_nbChannel;
 					float m_sampleRate;
 					enum audio::format m_format;
-					std::vector<std::vector<float> > m_filter; //!< Current filter
-					std::vector<std::vector<float> > m_feedBack; //!< Feedback history
+					etk::Vector<etk::Vector<float> > m_filter; //!< Current filter
+					etk::Vector<etk::Vector<float> > m_feedBack; //!< Feedback history
 					float m_mu; //!< mu step size
 				public:
 					LmsPrivate() :
@@ -91,7 +91,7 @@ namespace audio {
 							float feedback[processingSize];
 							float microphone[processingSize];
 							int32_t offset = bbb*processingSize;
-							int32_t nbData = std::min(processingSize,
+							int32_t nbData = etk::min(processingSize,
 							                          _nbSample - offset);
 							for (size_t iii=0; iii<nbData; ++iii) {
 								microphone[iii] = float(_microphone[offset+iii])/32767.0f;
@@ -119,11 +119,11 @@ namespace audio {
 						return true;
 					}
 					
-					float processValue(float* _feedback, float _microphone, std::vector<float>& _filter) {
+					float processValue(float* _feedback, float _microphone, etk::Vector<float>& _filter) {
 						// Error calculation.
 						float convolutionValue = audio::algo::river::convolution(_feedback, &_filter[0], _filter.size());
 						float error = _microphone - convolutionValue;
-						float out = std::avg(-1.0f, error, 1.0f);
+						float out = etk::avg(-1.0f, error, 1.0f);
 						audio::algo::river::updateFilter(&_filter[0], _feedback, error*m_mu, _filter.size());
 						return out;
 					}
@@ -173,15 +173,15 @@ void audio::algo::river::Lms::init(int8_t _nbChannel, float _sampleRate, enum au
 	m_private->init(_nbChannel, _sampleRate, _format);
 }
 
-std::vector<enum audio::format> audio::algo::river::Lms::getSupportedFormat() {
-	std::vector<enum audio::format> out = getNativeSupportedFormat();
-	out.push_back(audio::format_int16);
+etk::Vector<enum audio::format> audio::algo::river::Lms::getSupportedFormat() {
+	etk::Vector<enum audio::format> out = getNativeSupportedFormat();
+	out.pushBack(audio::format_int16);
 	return out;
 }
 
-std::vector<enum audio::format> audio::algo::river::Lms::getNativeSupportedFormat() {
-	std::vector<enum audio::format> out;
-	out.push_back(audio::format_float);
+etk::Vector<enum audio::format> audio::algo::river::Lms::getNativeSupportedFormat() {
+	etk::Vector<enum audio::format> out;
+	out.pushBack(audio::format_float);
 	return out;
 }
 

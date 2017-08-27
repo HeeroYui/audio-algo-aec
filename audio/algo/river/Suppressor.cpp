@@ -146,14 +146,14 @@ void audio::algo::river::Supressor::init(int8_t _nbChannel, float _sampleRate, e
 	m_private->init(_nbChannel, _sampleRate, _format);
 }
 
-std::vector<enum audio::format> audio::algo::river::Supressor::getSupportedFormat() {
-	std::vector<enum audio::format> out = getNativeSupportedFormat();
+etk::Vector<enum audio::format> audio::algo::river::Supressor::getSupportedFormat() {
+	etk::Vector<enum audio::format> out = getNativeSupportedFormat();
 	return out;
 }
 
-std::vector<enum audio::format> audio::algo::river::Supressor::getNativeSupportedFormat() {
-	std::vector<enum audio::format> out;
-	out.push_back(audio::format_float);
+etk::Vector<enum audio::format> audio::algo::river::Supressor::getNativeSupportedFormat() {
+	etk::Vector<enum audio::format> out;
+	out.pushBack(audio::format_float);
 	return out;
 }
 
