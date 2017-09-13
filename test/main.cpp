@@ -148,7 +148,7 @@ int main(int _argc, const char** _argv) {
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
 			if (perf == true) {
 				perfo.toc();
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				ethread::sleepMilliSeconds((1));
 			}
 		}
 	} else {
@@ -172,7 +172,7 @@ int main(int _argc, const char** _argv) {
 			algo.process(&output[iii*blockSize], &fbData[iii*blockSize], &micData[iii*blockSize], blockSize);
 			if (perf == true) {
 				perfo.toc();
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				ethread::sleepMilliSeconds((1));
 			}
 		}
 	}
