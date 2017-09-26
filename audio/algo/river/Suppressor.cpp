@@ -88,14 +88,14 @@ namespace audio {
 					 * @brief Set the algo attaque time.
 					 * @param[in] _time Time of the attaque gain.
 					 */
-					virtual void setAttaqueTime(std::chrono::microseconds _time) {
+					virtual void setAttaqueTime(echrono::microseconds _time) {
 						m_attaqueStep = 1.0 / float(int64_t(m_sampleRate) * 1000000LL / _time.count());
 					}
 					/**
 					 * @brief Set the algo release time.
 					 * @param[in] _time Time of the release gain.
 					 */
-					virtual void setReleaseTime(std::chrono::microseconds _time) {
+					virtual void setReleaseTime(echrono::microseconds _time) {
 						m_releaseStep = 1.0 / float(int64_t(m_sampleRate) * 1000000LL / _time.count());
 					}
 					/**
@@ -103,20 +103,20 @@ namespace audio {
 					 * @param[in] _gain dB gain to apply for minimum.
 					 */
 					virtual void setMinimumGain(float _gain) {
-						m_minGain = std::pow(10.0f, _gain/20.0f);
+						m_minGain = etk::pow(10.0f, _gain/20.0f);
 					}
 					/**
 					 * @brief Set the threashold Gain.
 					 * @param[in] _gain dB gain to start removing data.
 					 */
 					virtual void setThreshold(float _gain) {
-						m_threashold = std::pow(10.0f, _gain/20.0f);
+						m_threashold = etk::pow(10.0f, _gain/20.0f);
 					}
 					/**
 					 * @brief Set the delay befor releasing time.
 					 * @param[in] _time Time of the dalay release.
 					 */
-					virtual void setReleaseDelay(std::chrono::microseconds _time) {
+					virtual void setReleaseDelay(echrono::microseconds _time) {
 						m_nbSampleDelay = int64_t(m_sampleRate) * 1000000LL / _time.count();
 					}
 			};
@@ -165,14 +165,14 @@ void audio::algo::river::Supressor::process(void* _output, const void* _input, c
 }
 
 
-void audio::algo::river::Supressor::setAttaqueTime(std::chrono::microseconds _time) {
+void audio::algo::river::Supressor::setAttaqueTime(echrono::microseconds _time) {
 	if (m_private == nullptr) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setAttaqueTime(_time);
 }
 
-void audio::algo::river::Supressor::setReleaseTime(std::chrono::microseconds _time) {
+void audio::algo::river::Supressor::setReleaseTime(echrono::microseconds _time) {
 	if (m_private == nullptr) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
@@ -193,7 +193,7 @@ void audio::algo::river::Supressor::setThreshold(float _gain) {
 	m_private->setThreshold(_gain);
 }
 
-void audio::algo::river::Supressor::setReleaseDelay(std::chrono::microseconds _time) {
+void audio::algo::river::Supressor::setReleaseDelay(echrono::microseconds _time) {
 	if (m_private == nullptr) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}

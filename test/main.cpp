@@ -9,7 +9,7 @@
 #include <audio/algo/river/Lms.hpp>
 #include <audio/algo/river/Nlms.hpp>
 #include <etk/os/FSNode.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <ethread/tools.hpp>
 
 
@@ -17,11 +17,11 @@
 
 class Performance {
 	private:
-		std::chrono::steady_clock::time_point m_timeStart;
-		std::chrono::steady_clock::time_point m_timeStop;
-		std::chrono::nanoseconds m_totalTimeProcessing;
-		std::chrono::nanoseconds m_minProcessing;
-		std::chrono::nanoseconds m_maxProcessing;
+		echrono::Steady m_timeStart;
+		echrono::Steady m_timeStop;
+		echrono::nanoseconds m_totalTimeProcessing;
+		echrono::nanoseconds m_minProcessing;
+		echrono::nanoseconds m_maxProcessing;
 		int32_t m_totalIteration;
 	public:
 		Performance() :
@@ -32,11 +32,11 @@ class Performance {
 			
 		}
 		void tic() {
-			m_timeStart = std::chrono::steady_clock::now();
+			m_timeStart = echrono::Steady::now();
 		}
 		void toc() {
-			m_timeStop = std::chrono::steady_clock::now();
-			std::chrono::nanoseconds time = m_timeStop - m_timeStart;
+			m_timeStop = echrono::Steady::now();
+			echrono::nanoseconds time = m_timeStop - m_timeStart;
 			m_minProcessing = etk::min(m_minProcessing, time);
 			m_maxProcessing = etk::max(m_maxProcessing, time);
 			m_totalTimeProcessing += time;
@@ -44,13 +44,13 @@ class Performance {
 			
 		}
 		
-		std::chrono::nanoseconds getTotalTimeProcessing() {
+		echrono::nanoseconds getTotalTimeProcessing() {
 			return m_totalTimeProcessing;
 		}
-		std::chrono::nanoseconds getMinProcessing() {
+		echrono::nanoseconds getMinProcessing() {
 			return m_minProcessing;
 		}
-		std::chrono::nanoseconds getMaxProcessing() {
+		echrono::nanoseconds getMaxProcessing() {
 			return m_maxProcessing;
 		}
 		int32_t getTotalIteration() {

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <etk/types.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <audio/format.hpp>
 #include <ememory/memory.hpp>
 
@@ -115,7 +115,7 @@ namespace audio {
 					 * @brief Set filter size with specifing the filter temporal size and his samplerate
 					 * @param[in] _time Time of the filter size
 					 */
-					virtual void setFilterTime(std::chrono::microseconds _time);
+					virtual void setFilterTime(echrono::microseconds _time);
 					/**
 					 * @brief Set filter size in number of sample
 					 * @param[in] _nbSample Sample size of the filter

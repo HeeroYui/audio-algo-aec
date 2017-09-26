@@ -7,7 +7,7 @@
 #pragma once
 
 #include <etk/types.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <audio/format.hpp>
 #include <ememory/memory.hpp>
 
@@ -66,12 +66,12 @@ namespace audio {
 					 * @brief Set the algo attaque time.
 					 * @param[in] _time Time of the attaque gain.
 					 */
-					virtual void setAttaqueTime(std::chrono::microseconds _time);
+					virtual void setAttaqueTime(echrono::microseconds _time);
 					/**
 					 * @brief Set the algo release time.
 					 * @param[in] _time Time of the release gain.
 					 */
-					virtual void setReleaseTime(std::chrono::microseconds _time);
+					virtual void setReleaseTime(echrono::microseconds _time);
 					/**
 					 * @brief Set the minimum Gain.
 					 * @param[in] _gain dB gain to apply for minimum.
@@ -86,7 +86,7 @@ namespace audio {
 					 * @brief Set the delay befor releasing time.
 					 * @param[in] _time Time of the dalay release.
 					 */
-					virtual void setReleaseDelay(std::chrono::microseconds _time);
+					virtual void setReleaseDelay(echrono::microseconds _time);
 			};
 		}
 	}
