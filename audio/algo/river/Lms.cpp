@@ -129,7 +129,7 @@ namespace audio {
 					}
 					
 					void setFilterTime(echrono::microseconds _time) {
-						setFilterSize((m_sampleRate*_time.count())/1000000LL);
+						setFilterSize((m_sampleRate*_time.get())/1000000000LL);
 					}
 					
 					void setFilterSize(size_t _nbSample) {

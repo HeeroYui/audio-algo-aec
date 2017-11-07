@@ -89,14 +89,14 @@ namespace audio {
 					 * @param[in] _time Time of the attaque gain.
 					 */
 					virtual void setAttaqueTime(echrono::microseconds _time) {
-						m_attaqueStep = 1.0 / float(int64_t(m_sampleRate) * 1000000LL / _time.count());
+						m_attaqueStep = 1.0 / float(int64_t(m_sampleRate) * 1000000000LL / _time.get());
 					}
 					/**
 					 * @brief Set the algo release time.
 					 * @param[in] _time Time of the release gain.
 					 */
 					virtual void setReleaseTime(echrono::microseconds _time) {
-						m_releaseStep = 1.0 / float(int64_t(m_sampleRate) * 1000000LL / _time.count());
+						m_releaseStep = 1.0 / float(int64_t(m_sampleRate) * 1000000000LL / _time.get());
 					}
 					/**
 					 * @brief Set the minimum Gain.
@@ -117,7 +117,7 @@ namespace audio {
 					 * @param[in] _time Time of the dalay release.
 					 */
 					virtual void setReleaseDelay(echrono::microseconds _time) {
-						m_nbSampleDelay = int64_t(m_sampleRate) * 1000000LL / _time.count();
+						m_nbSampleDelay = int64_t(m_sampleRate) * 1000000000LL / _time.get();
 					}
 			};
 		}
