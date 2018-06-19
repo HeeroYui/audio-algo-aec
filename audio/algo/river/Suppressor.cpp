@@ -133,14 +133,14 @@ audio::algo::river::Supressor::~Supressor(void) {
 }
 
 void audio::algo::river::Supressor::reset(void) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->reset();
 }
 
 void audio::algo::river::Supressor::init(int8_t _nbChannel, float _sampleRate, enum audio::format _format) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		m_private = ememory::makeShared<audio::algo::river::SupressorPrivate>();
 	}
 	m_private->init(_nbChannel, _sampleRate, _format);
@@ -158,7 +158,7 @@ etk::Vector<enum audio::format> audio::algo::river::Supressor::getNativeSupporte
 }
 
 void audio::algo::river::Supressor::process(void* _output, const void* _input, const void* _inputFeedback, size_t _nbChunk) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->process(_output, _input, _inputFeedback, _nbChunk);
@@ -166,35 +166,35 @@ void audio::algo::river::Supressor::process(void* _output, const void* _input, c
 
 
 void audio::algo::river::Supressor::setAttaqueTime(echrono::microseconds _time) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setAttaqueTime(_time);
 }
 
 void audio::algo::river::Supressor::setReleaseTime(echrono::microseconds _time) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setReleaseTime(_time);
 }
 
 void audio::algo::river::Supressor::setMinimumGain(float _gain) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setMinimumGain(_gain);
 }
 
 void audio::algo::river::Supressor::setThreshold(float _gain) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setThreshold(_gain);
 }
 
 void audio::algo::river::Supressor::setReleaseDelay(echrono::microseconds _time) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setReleaseDelay(_time);

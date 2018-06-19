@@ -171,14 +171,14 @@ audio::algo::river::Nlms::~Nlms(void) {
 }
 
 void audio::algo::river::Nlms::reset(void) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->reset();
 }
 
 void audio::algo::river::Nlms::init(int8_t _nbChannel, float _sampleRate, enum audio::format _format) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		m_private = ememory::makeShared<audio::algo::river::NlmsPrivate>();
 	}
 	m_private->init(_nbChannel, _sampleRate, _format);
@@ -197,7 +197,7 @@ etk::Vector<enum audio::format> audio::algo::river::Nlms::getNativeSupportedForm
 }
 
 void audio::algo::river::Nlms::process(void* _output, const void* _input, const void* _inputFeedback, size_t _nbChunk) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->process(_output, _input, _inputFeedback, _nbChunk);
@@ -205,21 +205,21 @@ void audio::algo::river::Nlms::process(void* _output, const void* _input, const 
 
 
 void audio::algo::river::Nlms::setFilterTime(echrono::microseconds _time) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setFilterTime(_time);
 }
 
 void audio::algo::river::Nlms::setFilterSize(size_t _nbSample) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setFilterSize(_nbSample);
 }
 
 void audio::algo::river::Nlms::setMu(double _val) {
-	if (m_private == nullptr) {
+	if (m_private == null) {
 		AA_RIVER_ERROR("Algo is not initialized...");
 	}
 	m_private->setMu(_val);
