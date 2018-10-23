@@ -6,9 +6,9 @@
 
 #include <test-debug/debug.hpp>
 #include <etk/etk.hpp>
+#include <etk/uri/uri.hpp>
 #include <audio/algo/river/Lms.hpp>
 #include <audio/algo/river/Nlms.hpp>
-#include <etk/os/FSNode.hpp>
 #include <echrono/Steady.hpp>
 #include <ethread/tools.hpp>
 
@@ -64,8 +64,8 @@ int main(int _argc, const char** _argv) {
 	// the only one init for etk:
 	etk::init(_argc, _argv);
 	ethread::setName("test thread");
-	etk::String fbName = "";
-	etk::String micName = "";
+	etk::Path fbName;
+	etk::Path micName;
 	int32_t filterSize = 0;
 	float mu = 0.0f;
 	bool nlms = false;
@@ -105,8 +105,8 @@ int main(int _argc, const char** _argv) {
 			exit(0);
 		}
 	}
-	if (    fbName == ""
-	     || micName == "") {
+	if (    fbName.isEmpty() == true
+	     || micName.isEmpty() == true) {
 		TEST_ERROR("Can not Process missing parameters...");
 		exit(-1);
 	}
@@ -114,10 +114,22 @@ int main(int _argc, const char** _argv) {
 	Performance perfo;
 	
 	TEST_INFO("Read FeedBack:");
-	etk::Vector<int16_t> fbData = etk::FSNodeReadAllDataType<int16_t>(fbName);
+	etk::Vector<int16_t> fbData;
+	{
+		ememory::SharedPtr<etk::io::Interface> fileIO = etk::uri::get(fbName);
+		fileIO->open(etk::io::OpenMode::Read);
+		fbData = fileIO->readAll<int16_t>();
+		fileIO->close();
+	}
 	TEST_INFO("    " << fbData.size() << " samples");
 	TEST_INFO("Read Microphone:");
-	etk::Vector<int16_t> micData = etk::FSNodeReadAllDataType<int16_t>(micName);
+	etk::Vector<int16_t> micData;
+	{
+		ememory::SharedPtr<etk::io::Interface> fileIO = etk::uri::get(micName);
+		fileIO->open(etk::io::OpenMode::Read);
+		micData = fileIO->readAll<int16_t>();
+		fileIO->close();
+	}
 	TEST_INFO("    " << micData.size() << " samples");
 	// resize output :
 	etk::Vector<int16_t> output;
@@ -179,16 +191,23 @@ int main(int _argc, const char** _argv) {
 	TEST_PRINT("Process done");
 	if (perf == true) {
 		TEST_PRINT("Performance Result: ");
-	TEST_INFO("    blockSize=" << blockSize << " sample");
-	TEST_INFO("    min < avg < max =" << perfo.getMinProcessing() << " < "
-	                                  << perfo.getTotalTimeProcessing().get()/perfo.getTotalIteration() << "ns < "
-	                                  << perfo.getMaxProcessing());
-	float avg = (float(((perfo.getTotalTimeProcessing().get()/perfo.getTotalIteration())*sampleRate)/double(blockSize))/1000000000.0)*100.0;
-	TEST_INFO("    min < avg < max= " << (float((perfo.getMinProcessing().get()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "% < "
-	                                  << avg << "% < "
-	                                  << (float((perfo.getMaxProcessing().get()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "%");
-	TEST_PRINT("float : " << sampleRate << " : " << avg << "%");
+		TEST_INFO("    blockSize=" << blockSize << " sample");
+		TEST_INFO("    min < avg < max =" << perfo.getMinProcessing() << " < "
+		                                  << perfo.getTotalTimeProcessing().get()/perfo.getTotalIteration() << "ns < "
+		                                  << perfo.getMaxProcessing());
+		float avg = (float(((perfo.getTotalTimeProcessing().get()/perfo.getTotalIteration())*sampleRate)/double(blockSize))/1000000000.0)*100.0;
+		TEST_INFO("    min < avg < max= " << (float((perfo.getMinProcessing().get()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "% < "
+		                                  << avg << "% < "
+		                                  << (float((perfo.getMaxProcessing().get()*sampleRate)/double(blockSize))/1000000000.0)*100.0 << "%");
+		TEST_PRINT("float : " << sampleRate << " : " << avg << "%");
 	}
-	etk::FSNodeWriteAllDataType<int16_t>("output.raw", output);
+	{
+		ememory::SharedPtr<etk::io::Interface> fileIO = etk::uri::get(etk::Path("output.raw"));
+		if (fileIO->open(etk::io::OpenMode::Write) == false) {
+			return -1;
+		}
+		fileIO->writeAll<int16_t>(output);
+		fileIO->close();
+	}
 }
 
